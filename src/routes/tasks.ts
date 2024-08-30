@@ -2,6 +2,9 @@ import { FastifyInstance } from 'fastify'
 import { z } from 'zod'
 import { knex } from '../database'
 import { randomUUID } from 'crypto'
+import csvParser from 'csv-parser'
+import { Readable } from 'stream'
+
 
 
 
@@ -95,6 +98,34 @@ export async function tasksRoutes(app: FastifyInstance) {
         }
 
         return reply.status(200).send('task completed')   
+    })
+
+    app.post('/upload-csv', async (request, reply) => {
+        const data = await request.file()
+
+        if(!data){
+            return reply.status(400).send('No file uploaded')
+        }
+
+        const results: { title: string, description: string} [] = []
+
+        const stream = Readable.from(data.file)
+
+        stream.pipe(csvParser({headers: ['title', 'description']}))
+          .on('data', (row) => results.push(row))
+          .on('end', async () => {
+            for(const row of results) {
+                await knex('tasks').insert({
+                    id: randomUUID(),
+                    title: row.title,
+                    description: row.description,
+                })
+            }
+            reply.status(200).send('CSV processed successfully')
+          })
+          .on('error', (err) => {
+            reply.status(500).send('Error processing CSV.')
+          })
     })
     
 }
