@@ -143,12 +143,11 @@ O servidor estará disponível em `http://localhost:3333`.
 - **POST** `/tasks/upload-csv`
 - **Descrição**: Importa para o sistema tasks em massa (via aquivo csv).
 - **Corpo da Requisição**: (Não é necessário)
-- **Resposta**: 200 OK
 - **Formato do multipart/form-data**:
   
     O arquivo CSV deve ser enviado no campo `file`. Exemplo de uma requisição utilizando Insomnia:
 
-    1. No Insomnia, selecione o método **POST** e insira a URL da API: `http://localhost:3000/tasks/upload-csv`.
+    1. No Insomnia, selecione o método **POST** e insira a URL da API: `http://localhost:3333/tasks/upload-csv`.
     2. Vá para a aba **Body**.
     3. Selecione a opção **Multipart Form**.
     4. Adicione um novo campo com o nome `file`.
